@@ -1,0 +1,3 @@
+#!/bin/bash
+
+git remote add deploy_homologacao usuario@159.00.00.000:/home/usuario/git/hooks/projeto.com.br/app.git

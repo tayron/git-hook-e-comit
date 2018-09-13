@@ -1,0 +1,30 @@
+#!/bin/bash
+
+target_branch="homologacao"
+working_tree="/var/www/html/site"
+
+
+mv /var/www/html/site/.env /var/www/html/.env
+
+
+while read oldrev newrev refname
+do
+    branch=$(git rev-parse --symbolic --abbrev-ref $refname)
+    if [ -n "$branch" ] && [ "$target_branch" == "$branch" ]; then
+    
+       GIT_WORK_TREE=$working_tree git checkout $target_branch -f
+       NOW=$(date +"%Y%m%d-%H%M")
+       git tag release_$NOW $target_branch
+    
+       echo "   /==================================="
+       echo "   | DEPLOY FEITO COM SUCESSO"
+       echo "   | Branch utilizada: $target_branch"
+       echo "   | Tag name     : release_$NOW"
+       echo "   \=================================="
+    fi
+done
+
+mv /var/www/html/.env /var/www/html/site/.env
+yes | php /var/www/html/site/artisan migrate
+
+
